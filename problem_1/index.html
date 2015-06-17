@@ -2,58 +2,263 @@
 <html>
 
 <head>
+
+    <script src="../problem_1/jquery-1.11.3.js"></script>
+
     <title>3C Programming Test- Problem 1</title>
 
     <style>
-    html {
-        width: 100%;
-    }
-    form {
-        
-        width: 100%;
-        
-    }
-    label {
-        text-align: center;
-        width: 100%;
-        display:block;
-    }
-    input {
-        display: block;
-        margin: 0 auto;
-        width: 15em;
-        margin-bottom: 2em;
-    }
+	
+	html {
+	width: 100%;
+	}
+	
+	form {
+	width: 100%; 
+	}
+	
+	label {
+	text-align: center;
+	width: 100%;
+	display:block;
+	}
+	
+	input {
+	display: block;
+	margin: 0 auto;
+	width: 15em;
+	margin-bottom: 2em;
+	}
+	
+	.center {
+		text-align: center;
+		margin-left: auto;
+		margin-right: auto;
+		width: 100%;
+		font-size: 150%;
+	}
+	
+	body {
+	padding-top: 90px;
+	}
+	
+	.panel-login {
+		border-color: #ccc;
+		-webkit-box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.2);
+		-moz-box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.2);
+		box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.2);
+	}
+	
+	.panel-login>.panel-heading {
+		color: #00415d;
+		background-color: #fff;
+		border-color: #fff;
+		text-align:center;
+	}
+	
+	.panel-login>.panel-heading a{
+		text-decoration: none;
+		color: #666;
+		font-weight: bold;
+		font-size: 15px;
+		-webkit-transition: all 0.1s linear;
+		-moz-transition: all 0.1s linear;
+		transition: all 0.1s linear;
+	}
+	
+	.panel-login>.panel-heading a.active{
+		color: #029f5b;
+		font-size: 18px;
+	}
+	
+	.panel-login>.panel-heading hr{
+		margin-top: 10px;
+		margin-bottom: 0px;
+		clear: both;
+		border: 0;
+		height: 1px;
+		background-image: -webkit-linear-gradient(left,rgba(0, 0, 0, 0),rgba(0, 0, 0, 0.15),rgba(0, 0, 0, 0));
+		background-image: -moz-linear-gradient(left,rgba(0,0,0,0),rgba(0,0,0,0.15),rgba(0,0,0,0));
+		background-image: -ms-linear-gradient(left,rgba(0,0,0,0),rgba(0,0,0,0.15),rgba(0,0,0,0));
+		background-image: -o-linear-gradient(left,rgba(0,0,0,0),rgba(0,0,0,0.15),rgba(0,0,0,0));
+	}
+	
+	.panel-login input{
+		height: 45px;
+		border: 1px solid #ddd;
+		font-size: 16px;
+		-webkit-transition: all 0.1s linear;
+		-moz-transition: all 0.1s linear;
+		transition: all 0.1s linear;
+	}
+	
+	.errorMsg {  
+		color: red;
+		align: center;
+	}
+	
+	.errorBox {  
+		border: 2px solid red;
+	}
+
     </style>
 </head>
 
+<script type="text/javascript">
+
+$(function() {
+   //Set all inputs on page to have a type 'text'
+   $('input').attr('type','text');
+   
+   //Override submit button to validate
+   document.getElementById("thirdChannelForm").onsubmit = validateForm;
+   
+   //Set focus on first element
+   $('#firstName').focus();
+});
 
 
-<h2>Please submit your information!</h2>
 
-<form method="post">
+function validateForm(theForm) 
+{
+   with(theForm) 
+   {
+      var firstNameInput = document.getElementById("firstName");
+      var lastNameInput = document.getElementById("lastName");
+      var zipInput = document.getElementById("zip");
+      var dateInput = document.getElementById("date");
+      var emailInput = document.getElementById("email");
+      
+      return (validateAlphabetic(firstNameInput, "Error: Enter an alphabetic first name")
+           && validateAlphabetic(lastNameInput, "Error: Enter an alphabetic last name")
+           && validateZip(zipInput, "Error: Enter a valid zip code")
+	   && validateDate(dateInput, "Error: Enter a valid date")
+	   && validateEmail(emailInput, "Error: Enter a valid email"));
+   }
+}
 
-    <label for="firstName">First Name:</label><input name="first_name" id="firstName" value="" placeholder="Enter Your First Name..." type="text"/>
+function validate(isValid, errMsg, inputElm) 
+{
+   var error = document.getElementById("error");
 
-    <label for="lastName">Last Name:</label><input name="last_name" id="lastName" value="" placeholder="Enter Your Last Name..." type="text"/>
+   if (!isValid) 
+   {
+      if (error !== undefined && error !== null && errMsg !== undefined && errMsg !== null) 
+      {
+         error.innerHTML = errMsg;
+      }
+      
+      if (inputElm !== undefined && inputElm !== null) 
+      {
+         inputElm.classList.add("errorBox"); 
+         inputElm.focus();
+      }
+   } 
+   else 
+   {
+      if (error !== undefined && error !== null)
+      {
+         error.innerHTML = "Success!";
+	 error.classList.add("success"); 
+      }
+      if (inputElm !== undefined && inputElm !== null)
+      {
+         inputElm.classList.remove("errorBox");
+      }
+   }
+}
+	
+function validateAlphabetic(inputElm, errMsg) 
+{
+   var isValid = (inputElm.value.trim().match(/^[a-zA-Z]+$/) !== null) ;
+   validate(isValid, errMsg, inputElm);
+   return isValid;
+}
 
-    <label for="phone">Phone:</label><input name="phone" id="phone" value="" placeholder="Phone Number..." type="text"/>
+function validateZip(inputElm, errMsg) 
+{
+   var inputValue = inputElm.value.trim();
+   var isValid = (inputValue.match(/^[0-9]+$/) !== null && (inputValue.length >= 5) && (inputValue.length <= 5));
+   validate(isValid, errMsg, inputElm);
+   return isValid;
+}
 
-    <label for="email">Email:</label><input name="email" id="email" value="" placeholder="Email Address..." type="text"/>
+function validateDate(inputElm, errMsg)
+{
+   var re = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
+   var isValid = inputElm.value.match(re) !== null;
+   validate(isValid, errMsg, inputElm);
+   return isValid;
+}
 
-    <label for="street1">Street 1:</label><input name="street_1" id="street1" value="" placeholder="Street 1..." type="text"/>
+function validateEmail(inputElm, errMsg)
+{
+   var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+   var isValid = inputElm.value.match(re) !== null;
+   validate(isValid, errMsg, inputElm);
+   return isValid;
+}
 
-    <label for="street2">Street 2:</label><input name="street_2" id="street2" value="" placeholder="Street 2..." type="text"/>
+</script>
 
-    <label for="city">City:</label><input name="city" id="city" value="" placeholder="City..." type="text"/>
-
-    <label for="state">State:</label><input name="state" id="state" value="" placeholder="State..." type="text"/>
-    <label for="zip">Zip:</label><input name="zip" id="zip" value="" placeholder="Zip..." type="text"/>
-
-    <button type="submit">Submit</button>
-
-
-</form>
-
-
+<div class="container">
+    	<div class="row">
+			<div class="col-md-6 col-md-offset-3">
+				<div class="panel panel-login">
+					<div class="panel-heading">
+						<div class="row">
+							<div class="col-xs-6">
+								<a>Please submit your information!</a>
+							</div>
+						</div>
+						<hr>
+					</div>
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-lg-12">
+								<form id="thirdChannelForm" method="post">
+									<div id="error" class="errorMsg center">&nbsp;</div>
+									<div class="form-group">
+										<input name="first_name" id="firstName" tabindex="1" class="form-control" placeholder="First Name" value="">
+									</div>
+									<div class="form-group">
+										<input name="last_name" id="lastName" tabindex="1" class="form-control" placeholder="Last Name" value="">
+									</div>
+									<div class="form-group">
+										<input name="phone" id="phone" tabindex="2" class="form-control" placeholder="Phone Number">
+									</div>
+									<div class="form-group">
+										<input name="email" id="email" tabindex="2" class="form-control" placeholder="Email">
+									</div>
+									<div class="form-group">
+										<input name="street1" id="street1" tabindex="2" class="form-control" placeholder="Primary Street Address">
+									</div>
+									<div class="form-group">
+										<input name="street2" id="street2" tabindex="2" class="form-control" placeholder="Secondary Street Address">
+									</div>
+									<div class="form-group">
+										<input name="city" id="city" tabindex="2" class="form-control" placeholder="City">
+									</div>
+									<div class="form-group">
+										<input name="date" id="date" tabindex="2" class="form-control" placeholder="Todays Date">
+									</div>
+									<div class="form-group">
+										<input name="zip" id="zip" tabindex="2" class="form-control" placeholder="Zip">
+									</div>
+									<div class="form-group">
+										<div class="row">
+											<div align="center">
+												<button type="submit" name="register-submit" id="register-submit" tabindex="4">Submit</button>
+											</div>
+										</div>
+									</div>
+									<div>&nbsp;</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </html>
